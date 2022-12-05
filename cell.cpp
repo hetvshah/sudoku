@@ -5,8 +5,37 @@ cell::cell() {
 };
 
 std::ostream& operator<< (std::ostream & o, const cell & c){
-    if (cell.currNum == 0) //uncovered cell
-        o << " " ;
+    if (c.currNum == 0) //uncovered cell
+        o << " ";
     else 
-        o << currNum;
+        o << c.currNum;
+    return o;
+}
+
+int cell::getCurrNum() {
+    return currNum;
+}
+
+int cell::getAnsNum() {
+    return ansNum;
+}
+
+void cell::setCurrNum(int num) {
+    currNum = num; 
+}
+
+void cell::setAnsNum(int num) {
+    ansNum = num;
+}
+
+bool cell::getIsChangeable() {
+    return isChangable;
+}
+
+void cell::setIsChangeable(bool change) {
+    isChangable = change;
+}
+
+bool cell::isCorrect() {
+    return currNum == ansNum;
 }

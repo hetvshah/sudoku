@@ -1,8 +1,7 @@
 #include "game.hpp"
 #include "cell.hpp"
 #include "random.hpp"
-#include "safe.hpp"
-#include "mine.hpp"
+
 
 #include <memory>
 #include <iostream>
@@ -12,23 +11,84 @@ using namespace std;
 
 game::game(int difficulty) :
     difficulty {difficulty},
-    grid {} // needs to be a 2D array
+    grid {}
 {
-    // unique_ptr<pair<int, int> []> mine_locations = randomMineLocations(width, height, 0, 0, amount);
-    // numSafeSpaces = height*width - amount;
-    // // set up each column
-    // for (int i {0}; i < width; ++i)
-    // {
-    //     grid[i] = make_unique<shared_ptr<cell> []>(height);
-    // }
+    // pick a random sudoku game and initialize each ansNum for cells in grid
+    // also initialize cells
+
+    auto numLocations {0};
+
+    if (difficulty == 0) {
+        // easy - 45
+        numLocations = 45;
+    } else if (difficulty == 1) {
+        // medium - 30
+        numLocations = 30;
+    } else if (difficulty == 2) {
+        // hard - 25
+        numLocations = 25;
+    }
+    
+    auto locations = randomCellLocations(9, 9, numLocations);
+    
+    for (int i {0}; i < numLocations; ++i) {
+        pair<int, int> curr_location = locations[i];
+        cell curr_cell = grid[curr_location.first][curr_location.second];
+        curr_cell.setCurrNum(curr_cell.getAnsNum());
+        curr_cell.setIsChangeable(false);
+    }
 }
 
-int game::processGuess(int xCoord, int yCoord){
+// return -1 on error, 1 if won, and 0 otherwise
+int game::processPut(int xCoord, int yCoord, int num) {
+    cell curr_cell = grid[yCoord][xCoord];
+    
+    if (curr_cell.getIsChangeable()) {
+        curr_cell.setCurrNum(num);
+    } else {
+        return -1;
+    }
+    
+    if (isWon()) {
+        return 1;
+    }
+
     return 0;
 }
 
-int game::processHint() {
+int game::processRemove(int xCoord, int yCoord) {
+    cell curr_cell = grid[yCoord][xCoord];
+    
+    if (curr_cell.getIsChangeable()) {
+        curr_cell.setCurrNum(0);
+    } else {
+        return -1;
+    }
+
     return 0;
+}
+
+void game::processHint() {
+    auto hint = randomCellLocations(9, 9, 1)[0];
+
+    int y = hint.first;
+    int x = hint.second;
+
+    while (!grid[y][x].getIsChangeable() || grid[y][x].isCorrect()) {
+        hint = randomCellLocations(9, 9, 1)[0];
+        y = hint.first;
+        x = hint.second;
+    }
+    
+    int currNum = grid[hint.first][hint.second].getCurrNum();
+    int ansNum = grid[hint.first][hint.second].getAnsNum();
+
+    if (currNum == 0) {
+        // cell hasn't been guessed yet
+        cout << "Hint: The number at (" << x << ", " << y << ") is " << ansNum;
+    } else {
+        cout << "Hint: Your current guess at (" << x << ", " << y << ") is incorrect. Try " << ansNum;
+    }
 }
 
 int game::processUndo() {
@@ -48,11 +108,22 @@ void game::uncoverAll() {
     // }
 }
 
+bool game::isWon() {
+    for (int i = 0; i < 8; ++i) {
+        for (int j = 0; j < 8; ++j) {
+            if (grid[i][j].getAnsNum() != grid[i][j].getCurrNum())
+                return false;
+        }
+    }
+
+    return true;
+}
+
 ostream & operator<<(ostream & os, const game & g)
 {
     // first print the top row of x coordinates
     os << setw(3) << " "; // leave a space for the column of y coordinate labels
-    for (int i {0}; i < g.width; ++i)
+    for (int i {0}; i < 9; ++i)
     {
         // setw sets the width of the next thing to be printed
         os << setw(3) << i + 1;
@@ -60,15 +131,14 @@ ostream & operator<<(ostream & os, const game & g)
     os << "\n";
 
     // print row by row
-    for (int i {0}; i < g.height; ++i)
+    for (int i {0}; i < 9; ++i)
     {
         // first print the y coordinate
         os << setw(3) << i + 1;
 
-        // for (int j {0}; j < g.width; ++j) {
-        //     os << setw(3);
-        //     g.grid[j][i]->print(os);
-        // }
+        for (int j {0}; j < 9; ++j) {
+            os << setw(3) << g.grid[j][i];
+        }
         os << "\n";
     }
     return os;
