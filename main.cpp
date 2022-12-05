@@ -9,27 +9,7 @@
 
 using namespace std;
 
-// std::fstream& GotoLine(std::fstream& file, unsigned int num){
-//     file.seekg(std::ios::beg);
-//     for(int i=0; i < num - 1; ++i){
-//         file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
-//     }
-//     return file;
-// }
 
-// int main(){
-//     using namespace std;
-//     fstream file("bla.txt");
-
-//     GotoLine(file, 8);
-
-//     string line8;
-//     file >> line8;
-
-//     cout << line8;
-//     cin.get();
-//     return 0;
-// }
 
 int main () {
     string s;
@@ -66,27 +46,36 @@ int main () {
                 iss >> y;
                 iss >> num;
                 if (board.processPut(x, y, num) == 1) {
-                    cout << "Winner winner chicken dinner!\n";
+                    cout << "You won!\n";
                     activeGame = false;
                 } 
+                cout << board;
             }
         } else if (command == "remove") {
             if (activeGame) {
                 int x, y;
                 iss >> x;
                 iss >> y;
-                //TODO: handle casing for process remove
+                // TODO: handle casing for process remove
                 board.processRemove(x, y);
-
+                cout << board;
             }
         } else if (command == "check") {
-            
+            if (activeGame) {
+                board.processCheck();
+            }
         } else if (command == "undo") {
 
         } else if (command == "redo") {
             
         } else if (command == "hint") {
-            
+            if (activeGame) {
+                board.processHint();
+            }
         } else if (command == "finish") {}
     }
 }
+
+// TODO:
+// add stack of actions
+// error check from main

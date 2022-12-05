@@ -3,7 +3,7 @@ CXXFLAGS=-std=c++20 -Wall -Werror -g
 
 all : main
 
-main : cell.o game.o main.o random.o
+main : cell.o game.o main.o random.o action.o
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 %.o : %.cpp %.hpp

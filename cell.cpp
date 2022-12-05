@@ -2,13 +2,16 @@
 
 cell::cell() {
     currNum = 0;
+    isChangable = true;
 };
 
 std::ostream& operator<< (std::ostream & o, const cell & c){
     if (c.currNum == 0) //uncovered cell
-        o << " ";
-    else 
+        o << ".";
+    else {
         o << c.currNum;
+    } 
+        
     return o;
 }
 
@@ -21,11 +24,11 @@ int cell::getAnsNum() {
 }
 
 void cell::setCurrNum(int num) {
-    currNum = num; 
+    this->currNum = num; 
 }
 
 void cell::setAnsNum(int num) {
-    ansNum = num;
+    this->ansNum = num;
 }
 
 bool cell::getIsChangeable() {
@@ -33,7 +36,7 @@ bool cell::getIsChangeable() {
 }
 
 void cell::setIsChangeable(bool change) {
-    isChangable = change;
+    this->isChangable = change;
 }
 
 bool cell::isCorrect() {

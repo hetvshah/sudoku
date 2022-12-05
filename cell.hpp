@@ -4,7 +4,6 @@
 #include <memory>
 #include <iostream>
 
-
 class cell
 {
     protected:

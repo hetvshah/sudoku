@@ -2,7 +2,6 @@
 #include "cell.hpp"
 #include "random.hpp"
 
-
 #include <memory>
 #include <iostream>
 #include <iomanip>
@@ -31,12 +30,14 @@ game::game(int difficulty) :
     
     auto locations = randomCellLocations(9, 9, numLocations);
     
-    for (int i {0}; i < numLocations; ++i) {
-        pair<int, int> curr_location = locations[i];
-        cell curr_cell = grid[curr_location.first][curr_location.second];
-        curr_cell.setCurrNum(curr_cell.getAnsNum());
-        curr_cell.setIsChangeable(false);
-    }
+    // for (int i {0}; i < numLocations; ++i) {
+    //     pair<int, int> curr_location = locations[i];
+    //     cell curr_cell = grid[curr_location.first][curr_location.second];
+    //     curr_cell.setCurrNum(curr_cell.getAnsNum());
+    //     curr_cell.setIsChangeable(false);
+    // }
+
+    // undoStack.push(game);
 }
 
 // return -1 on error, 1 if won, and 0 otherwise
@@ -45,6 +46,12 @@ int game::processPut(int xCoord, int yCoord, int num) {
     
     if (curr_cell.getIsChangeable()) {
         curr_cell.setCurrNum(num);
+        grid[yCoord][xCoord] = curr_cell;
+        // action new_action;
+        // new_action.prevValue = num;
+        // new_action.xCoord = xCoord;
+        // new_action.yCoord = yCoord;
+        // undoStack.push(new_action);
     } else {
         return -1;
     }
@@ -61,6 +68,8 @@ int game::processRemove(int xCoord, int yCoord) {
     
     if (curr_cell.getIsChangeable()) {
         curr_cell.setCurrNum(0);
+        grid[yCoord][xCoord] = curr_cell;
+        // stack.push(game);
     } else {
         return -1;
     }
@@ -89,6 +98,28 @@ void game::processHint() {
     } else {
         cout << "Hint: Your current guess at (" << x << ", " << y << ") is incorrect. Try " << ansNum;
     }
+}
+
+void game::processCheck() {
+    int correctGuesses = 0;
+    int incorrectGuesses = 0;
+    int numLeft = 0;
+
+    for (int i {0}; i < 9; ++i) {
+        for (int j {0}; j < 9; ++j) {
+            if (grid[i][j].getIsChangeable() && grid[i][j].getCurrNum() != 0) {
+                if (grid[i][j].getCurrNum() == grid[i][j].getAnsNum()) {
+                    correctGuesses++;
+                } else {
+                    incorrectGuesses++;
+                }
+            } else {
+                numLeft++;
+            }
+        }
+    }
+
+    cout << "You have " << correctGuesses << " correct guesses, " << incorrectGuesses << " incorrect guesses, and " << numLeft << " guesses left to make.\n";
 }
 
 int game::processUndo() {
@@ -121,25 +152,35 @@ bool game::isWon() {
 
 ostream & operator<<(ostream & os, const game & g)
 {
-    // first print the top row of x coordinates
-    os << setw(3) << " "; // leave a space for the column of y coordinate labels
-    for (int i {0}; i < 9; ++i)
-    {
-        // setw sets the width of the next thing to be printed
-        os << setw(3) << i + 1;
-    }
-    os << "\n";
+    // os << setw(3) << " "; // leave a space for the column of y coordinate labels
+    // for (int i {0}; i < 9; ++i)
+    // {
+    //     // setw sets the width of the next thing to be printed
+    //     // os << setw(3) << i + 1;
+    //     os << setw(3) << " | ";
+    // }
+    // os << "\n";
 
     // print row by row
     for (int i {0}; i < 9; ++i)
     {
         // first print the y coordinate
-        os << setw(3) << i + 1;
+        // os << setw(3) << i + 1;
 
         for (int j {0}; j < 9; ++j) {
-            os << setw(3) << g.grid[j][i];
+            os << g.grid[j][i];
+            if (j == 2 || j == 5) {
+                os << setw(3) << " || ";
+            } else {
+                if (j != 8) {
+                    os << setw(3) << " | ";
+                }
+            }
         }
         os << "\n";
+        if (i == 2 || i == 5) {
+            os << "-----------------------------------\n";
+        }
     }
     return os;
 }
