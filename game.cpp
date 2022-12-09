@@ -40,7 +40,7 @@ game::game(int difficulty) :
     // undoStack.push(game);
 }
 
-// return -1 on error, 1 if won, and 0 otherwise
+// return 1 if won, and 0 otherwise
 int game::processPut(int xCoord, int yCoord, int num) {
     cell curr_cell = grid[yCoord][xCoord];
     
@@ -52,8 +52,6 @@ int game::processPut(int xCoord, int yCoord, int num) {
         grid[yCoord][xCoord] = curr_cell;
 
         clearRedoStack();
-    } else {
-        return -1;
     }
     
     if (isWon()) {
@@ -63,7 +61,7 @@ int game::processPut(int xCoord, int yCoord, int num) {
     return 0;
 }
 
-int game::processRemove(int xCoord, int yCoord) {
+void game::processRemove(int xCoord, int yCoord) {
     cell curr_cell = grid[yCoord][xCoord];
     
     if (curr_cell.getIsChangeable()) {
@@ -74,11 +72,7 @@ int game::processRemove(int xCoord, int yCoord) {
         grid[yCoord][xCoord] = curr_cell;
 
         clearRedoStack();
-    } else {
-        return -1;
     }
-
-    return 0;
 }
 
 void game::processHint() {
@@ -166,13 +160,16 @@ void game::clearRedoStack() {
     }
 }
 
-// Uncovers all the cells since the game is over
-void game::uncoverAll() {
-    // for (int i {0}; i < width; ++i) {
-    //     for (int j {0}; j < height; ++j) {
-    //         grid[i][j]->changedCovered(false);
-    //     }
-    // }
+void game::processFinish() {
+    for (int i {0}; i < 9; ++i) {
+        for (int j {0}; j < 9; ++j) {
+            if (grid[i][j].getCurrNum() == 0) {
+                cell curr_cell = grid[i][j];
+                curr_cell.setCurrNum(curr_cell.getAnsNum());
+                grid[i][j] = curr_cell;
+            }
+        }
+    }
 }
 
 bool game::isWon() {

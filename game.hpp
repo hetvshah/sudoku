@@ -19,14 +19,14 @@ class game
     public:
         game(int);
         int processPut(int xCoord, int yCoord, int num);
-        int processRemove(int xCoord, int yCoord);
+        void processRemove(int xCoord, int yCoord);
         void processHint();
         void processCheck();
         void processUndo();
         void processRedo();
         int processGuess(int xCoord, int yCoord);
+        void processFinish();
         void clearRedoStack();
-        void uncoverAll();
         bool isWon();
         friend std::ostream & operator<<(std::ostream & os, const game & g);
 };

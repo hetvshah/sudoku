@@ -39,46 +39,39 @@ int main () {
                 // throw error
             }
             cout << board;
-        } else if (command == "put") {
-            if (activeGame) {
+        } else if (activeGame) {
+            if (command == "put") {
                 int x, y, num;
                 iss >> x;
                 iss >> y;
                 iss >> num;
+
                 if (board.processPut(x, y, num) == 1) {
                     cout << "You won!\n";
                     activeGame = false;
                 } 
                 cout << board;
-            }
-        } else if (command == "remove") {
-            if (activeGame) {
+            } else if (command == "remove") {
                 int x, y;
                 iss >> x;
                 iss >> y;
-                // TODO: handle casing for process remove
                 board.processRemove(x, y);
                 cout << board;
-            }
-        } else if (command == "check") {
-            if (activeGame) {
+            } else if (command == "check") {
                 board.processCheck();
-            }
-        } else if (command == "undo") {
-            if (activeGame) {
+            } else if (command == "undo") {
                 board.processUndo();
                 cout << board;
-            }
-        } else if (command == "redo") {
-            if (activeGame) {
+            } else if (command == "redo") {
                 board.processRedo();
                 cout << board;
-            }
-        } else if (command == "hint") {
-            if (activeGame) {
+            } else if (command == "hint") {
                 board.processHint();
+            } else if (command == "finish") {
+                board.processFinish();
+                cout << board;
             }
-        } else if (command == "finish") {}
+        }
     }
 }
 
