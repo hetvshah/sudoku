@@ -65,9 +65,15 @@ int main () {
                 board.processCheck();
             }
         } else if (command == "undo") {
-
+            if (activeGame) {
+                board.processUndo();
+                cout << board;
+            }
         } else if (command == "redo") {
-            
+            if (activeGame) {
+                board.processRedo();
+                cout << board;
+            }
         } else if (command == "hint") {
             if (activeGame) {
                 board.processHint();

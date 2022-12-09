@@ -22,9 +22,10 @@ class game
         int processRemove(int xCoord, int yCoord);
         void processHint();
         void processCheck();
-        int processUndo();
-        int processRedo();
+        void processUndo();
+        void processRedo();
         int processGuess(int xCoord, int yCoord);
+        void clearRedoStack();
         void uncoverAll();
         bool isWon();
         friend std::ostream & operator<<(std::ostream & os, const game & g);

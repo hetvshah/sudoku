@@ -4,6 +4,6 @@
 
 class action {
     public:
-        action();
+        action(int, int, int);
         int prevValue, xCoord, yCoord;
 };

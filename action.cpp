@@ -1,7 +1,7 @@
 #include "action.hpp"
 
-action::action() {
-    prevValue = 0;
-    xCoord = 0; 
-    yCoord = 0;
+action::action(int prev, int x, int y) {
+    prevValue = prev;
+    xCoord = x; 
+    yCoord = y;
 };

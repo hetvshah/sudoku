@@ -45,13 +45,13 @@ int game::processPut(int xCoord, int yCoord, int num) {
     cell curr_cell = grid[yCoord][xCoord];
     
     if (curr_cell.getIsChangeable()) {
+        action new_action {curr_cell.getCurrNum(), xCoord, yCoord};
+        undoStack.push(new_action);
+
         curr_cell.setCurrNum(num);
         grid[yCoord][xCoord] = curr_cell;
-        // action new_action;
-        // new_action.prevValue = num;
-        // new_action.xCoord = xCoord;
-        // new_action.yCoord = yCoord;
-        // undoStack.push(new_action);
+
+        clearRedoStack();
     } else {
         return -1;
     }
@@ -67,9 +67,13 @@ int game::processRemove(int xCoord, int yCoord) {
     cell curr_cell = grid[yCoord][xCoord];
     
     if (curr_cell.getIsChangeable()) {
+        action new_action {curr_cell.getCurrNum(), xCoord, yCoord};
+        undoStack.push(new_action);
+
         curr_cell.setCurrNum(0);
         grid[yCoord][xCoord] = curr_cell;
-        // stack.push(game);
+
+        clearRedoStack();
     } else {
         return -1;
     }
@@ -122,12 +126,44 @@ void game::processCheck() {
     cout << "You have " << correctGuesses << " correct guesses, " << incorrectGuesses << " incorrect guesses, and " << numLeft << " guesses left to make.\n";
 }
 
-int game::processUndo() {
-    return 0;
+void game::processUndo() {
+    if (!undoStack.empty()) {
+        action prev_action = undoStack.top();
+        undoStack.pop();
+        int xCoord = prev_action.xCoord;
+        int yCoord = prev_action.yCoord;
+
+        cell curr_cell = grid[yCoord][xCoord];
+
+        action new_action {curr_cell.getCurrNum(), xCoord, yCoord};
+        redoStack.push(new_action);
+
+        curr_cell.setCurrNum(prev_action.prevValue);
+        grid[yCoord][xCoord] = curr_cell;
+    }
 }
 
-int game::processRedo() {
-    return 0;
+void game::processRedo() {
+    if (!redoStack.empty()) {
+        action prev_action = redoStack.top();
+        redoStack.pop();
+        int xCoord = prev_action.xCoord;
+        int yCoord = prev_action.yCoord;
+
+        cell curr_cell = grid[yCoord][xCoord];
+
+        action new_action {curr_cell.getCurrNum(), xCoord, yCoord};
+        undoStack.push(new_action);
+
+        curr_cell.setCurrNum(prev_action.prevValue);
+        grid[yCoord][xCoord] = curr_cell;
+    }
+}
+
+void game::clearRedoStack() {
+    while (!redoStack.empty()) {
+        redoStack.pop();
+    }
 }
 
 // Uncovers all the cells since the game is over
