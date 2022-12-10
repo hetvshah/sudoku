@@ -4,9 +4,36 @@
 
 #include <memory>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
+#include <stdio.h>
+#include <random>
+#include <string>
 
 using namespace std;
+
+//Helper function to read from a certain line of the sudoku file
+std::fstream& GotoLine(std::fstream& file, unsigned int num){
+    file.seekg(std::ios::beg);
+    for(int i=0; i < num - 1; ++i){
+        file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+    }
+    return file;
+}
+
+string switchNumbers(string original, string digit1, string digit2) {
+    string switched;
+    for (int i = 0; i < original.length(); ++i) {
+        if (original[i] == digit1[0]) 
+            switched = switched + digit2[0];
+        else if (original[i] == digit2[0])
+            switched = switched + digit1[0];
+        else
+            switched = switched + original[i];
+    }
+    
+    return switched;
+}
 
 game::game(int difficulty) :
     difficulty {difficulty},
@@ -30,11 +57,55 @@ game::game(int difficulty) :
     
     auto locations = randomCellLocations(9, 9, numLocations);
     
+    //Import game from sudokus.txt
+    fstream file("sudokus.txt");
+
+    random_device rd;
+    mt19937 rng(rd()); 
+    uniform_int_distribution<int> uni(1,10000); 
+
+    auto random_integer = uni(rng);
+    GotoLine(file, random_integer);
+    string line;
+    file >> line;
+
+    //loop to do 5 bijective switches of integers from the original given line
+    for (int i = 0; i < 5; ++i) {
+        random_device rd2;
+        mt19937 rng2(rd2()); 
+        uniform_int_distribution<int> uni2(1,9); 
+        auto random_integer2 = uni2(rng2);
+
+        random_device rd3;
+        mt19937 rng3(rd3()); 
+        uniform_int_distribution<int> uni3(1,9); 
+        auto random_integer3 = uni3(rng3);
+
+        line = switchNumbers(line, to_string(random_integer2),to_string(random_integer3));
+    }
+
+    int index = 0;
+
+    cout << line << "\n";
+    for (int i {0}; i < 9; ++i) {
+        for (int j {0}; j < 9; ++j) {
+            int num = line[index] - '0';
+            ++index;
+            cell curr_cell = grid[j][i];
+            cout<< num;
+            curr_cell.setAnsNum(num);
+            grid[j][i] = curr_cell;
+        }
+    }
+    cout << "\n";
+    
+
     // for (int i {0}; i < numLocations; ++i) {
     //     pair<int, int> curr_location = locations[i];
     //     cell curr_cell = grid[curr_location.first][curr_location.second];
     //     curr_cell.setCurrNum(curr_cell.getAnsNum());
     //     curr_cell.setIsChangeable(false);
+    //     grid[curr_location.first][curr_location.second] = curr_cell;
     // }
 
     // undoStack.push(game);

@@ -7,7 +7,7 @@ cell::cell() {
 
 std::ostream& operator<< (std::ostream & o, const cell & c){
     if (c.currNum == 0) //uncovered cell
-        o << ".";
+        o << "."; //check w ansnum for random board
     else {
         o << c.currNum;
     } 

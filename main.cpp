@@ -38,6 +38,9 @@ int main () {
             } else {
                 // throw error
             }
+
+            
+
             cout << board;
         } else if (activeGame) {
             if (command == "put") {
