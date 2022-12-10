@@ -49,7 +49,7 @@ int main () {
                 iss >> y;
                 iss >> num;
 
-                if (board.processPut(x, y, num) == 1) {
+                if (board.processPut(y, x, num) == 1) {
                     cout << "You won!\n";
                     activeGame = false;
                 } 
@@ -58,7 +58,7 @@ int main () {
                 int x, y;
                 iss >> x;
                 iss >> y;
-                board.processRemove(x, y);
+                board.processRemove(y, x);
                 cout << board;
             } else if (command == "check") {
                 board.processCheck();

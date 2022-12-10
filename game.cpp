@@ -86,27 +86,27 @@ game::game(int difficulty) :
 
     int index = 0;
 
-    cout << line << "\n";
+    //cout << line << "\n";
     for (int i {0}; i < 9; ++i) {
         for (int j {0}; j < 9; ++j) {
             int num = line[index] - '0';
             ++index;
             cell curr_cell = grid[j][i];
-            cout<< num;
+            //cout<< num;
             curr_cell.setAnsNum(num);
             grid[j][i] = curr_cell;
         }
     }
-    cout << "\n";
+    
     
 
-    // for (int i {0}; i < numLocations; ++i) {
-    //     pair<int, int> curr_location = locations[i];
-    //     cell curr_cell = grid[curr_location.first][curr_location.second];
-    //     curr_cell.setCurrNum(curr_cell.getAnsNum());
-    //     curr_cell.setIsChangeable(false);
-    //     grid[curr_location.first][curr_location.second] = curr_cell;
-    // }
+    for (int i {0}; i < numLocations; ++i) {
+        pair<int, int> curr_location = locations[i];
+        cell curr_cell = grid[curr_location.first][curr_location.second];
+        curr_cell.setCurrNum(curr_cell.getAnsNum());
+        curr_cell.setIsChangeable(false);
+        grid[curr_location.first][curr_location.second] = curr_cell;
+    }
 
     // undoStack.push(game);
 }
@@ -234,11 +234,11 @@ void game::clearRedoStack() {
 void game::processFinish() {
     for (int i {0}; i < 9; ++i) {
         for (int j {0}; j < 9; ++j) {
-            if (grid[i][j].getCurrNum() == 0) {
-                cell curr_cell = grid[i][j];
-                curr_cell.setCurrNum(curr_cell.getAnsNum());
-                grid[i][j] = curr_cell;
-            }
+            
+            cell curr_cell = grid[i][j];
+            curr_cell.setCurrNum(curr_cell.getAnsNum());
+            grid[i][j] = curr_cell;
+    
         }
     }
 }
