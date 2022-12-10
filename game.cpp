@@ -12,7 +12,7 @@
 
 using namespace std;
 
-//Helper function to read from a certain line of the sudoku file
+// Helper function to read from a certain line of the sudoku file
 std::fstream& GotoLine(std::fstream& file, unsigned int num){
     file.seekg(std::ios::beg);
     for(int i=0; i < num - 1; ++i){
@@ -39,9 +39,6 @@ game::game(int difficulty) :
     difficulty {difficulty},
     grid {}
 {
-    // pick a random sudoku game and initialize each ansNum for cells in grid
-    // also initialize cells
-
     auto numLocations {0};
 
     if (difficulty == 0) {
@@ -69,7 +66,7 @@ game::game(int difficulty) :
     string line;
     file >> line;
 
-    //loop to do 5 bijective switches of integers from the original given line
+    // loop to do 5 bijective switches of integers from the original given line
     for (int i = 0; i < 5; ++i) {
         random_device rd2;
         mt19937 rng2(rd2()); 
@@ -85,14 +82,11 @@ game::game(int difficulty) :
     }
 
     int index = 0;
-
-    //cout << line << "\n";
     for (int i {0}; i < 9; ++i) {
         for (int j {0}; j < 9; ++j) {
             int num = line[index] - '0';
             ++index;
             cell curr_cell = grid[j][i];
-            //cout<< num;
             curr_cell.setAnsNum(num);
             grid[j][i] = curr_cell;
         }
@@ -107,8 +101,6 @@ game::game(int difficulty) :
         curr_cell.setIsChangeable(false);
         grid[curr_location.first][curr_location.second] = curr_cell;
     }
-
-    // undoStack.push(game);
 }
 
 // return 1 if won, and 0 otherwise
@@ -163,9 +155,9 @@ void game::processHint() {
 
     if (currNum == 0) {
         // cell hasn't been guessed yet
-        cout << "Hint: The number at (" << x << ", " << y << ") is " << ansNum;
+        cout << "The number at (" << x << ", " << y << ") is " << ansNum << "\n";
     } else {
-        cout << "Hint: Your current guess at (" << x << ", " << y << ") is incorrect. Try " << ansNum;
+        cout << "Your current guess at (" << x << ", " << y << ") is incorrect. Try " << ansNum << "\n";
     }
 }
 
@@ -176,14 +168,16 @@ void game::processCheck() {
 
     for (int i {0}; i < 9; ++i) {
         for (int j {0}; j < 9; ++j) {
-            if (grid[i][j].getIsChangeable() && grid[i][j].getCurrNum() != 0) {
+            if (grid[i][j].getIsChangeable()) {
                 if (grid[i][j].getCurrNum() == grid[i][j].getAnsNum()) {
                     correctGuesses++;
                 } else {
-                    incorrectGuesses++;
+                    if (grid[i][j].getCurrNum() == 0) {
+                        numLeft++;
+                    } else {
+                        incorrectGuesses++;
+                    }
                 }
-            } else {
-                numLeft++;
             }
         }
     }
@@ -256,20 +250,22 @@ bool game::isWon() {
 
 ostream & operator<<(ostream & os, const game & g)
 {
-    // os << setw(3) << " "; // leave a space for the column of y coordinate labels
-    // for (int i {0}; i < 9; ++i)
-    // {
-    //     // setw sets the width of the next thing to be printed
-    //     // os << setw(3) << i + 1;
-    //     os << setw(3) << " | ";
-    // }
-    // os << "\n";
+    os << setw(3) << " ";
+    for (int i {0}; i < 9; ++i)
+    {
+        os << setw(3) << i;
+        if (i == 2 || i == 5) {
+            os << setw(2) << " ";
+        } else {
+            os << setw(1) << " ";
+        }
+    }
+    os << "\n";
 
     // print row by row
     for (int i {0}; i < 9; ++i)
     {
-        // first print the y coordinate
-        // os << setw(3) << i + 1;
+        os << setw(3) << i << setw(3);
 
         for (int j {0}; j < 9; ++j) {
             os << g.grid[j][i];
@@ -283,7 +279,7 @@ ostream & operator<<(ostream & os, const game & g)
         }
         os << "\n";
         if (i == 2 || i == 5) {
-            os << "-----------------------------------\n";
+            os << setw(5) << " " << "-----------------------------------\n";
         }
     }
     return os;

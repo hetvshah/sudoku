@@ -9,16 +9,12 @@
 
 using namespace std;
 
-
-
 int main () {
     string s;
-    // bool activeGame = false;
     auto board {game(0)};
     bool activeGame = false;
 
-    while (getline(cin, s)) // terminate when EOF is received
-    {
+    while (getline(cin, s)) {
         istringstream iss {s};
         string command;
         string difficulty;
@@ -36,10 +32,8 @@ int main () {
             } else if (difficulty == "hard") {
                 board = game(2);
             } else {
-                // throw error
+                continue;
             }
-
-            
 
             cout << board;
         } else if (activeGame) {
@@ -49,16 +43,18 @@ int main () {
                 iss >> y;
                 iss >> num;
 
-                if (board.processPut(y, x, num) == 1) {
+                if (board.processPut(x, y, num) == 1) {
+                    cout << board;
                     cout << "You won!\n";
                     activeGame = false;
-                } 
-                cout << board;
+                } else {
+                    cout << board;
+                }
             } else if (command == "remove") {
                 int x, y;
                 iss >> x;
                 iss >> y;
-                board.processRemove(y, x);
+                board.processRemove(x, y);
                 cout << board;
             } else if (command == "check") {
                 board.processCheck();
@@ -77,7 +73,3 @@ int main () {
         }
     }
 }
-
-// TODO:
-// add stack of actions
-// error check from main

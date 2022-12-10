@@ -12,7 +12,7 @@ class game
 {
     private:
         int difficulty; // 0 = easy, 1 = medium, 2 = hard
-        cell grid[9][9]; //std array
+        cell grid[9][9];
         std::stack<action> undoStack;
         std::stack<action> redoStack;
         
