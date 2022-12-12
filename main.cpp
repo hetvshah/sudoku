@@ -32,7 +32,6 @@ int main () {
         iss >> command;
         
         if (command == "new") {
-            activeGame = true;
             iss >> difficulty;
 
             if (difficulty == "easy") {
@@ -41,8 +40,11 @@ int main () {
                 board = game(1);
             } else if (difficulty == "hard") {
                 board = game(2);
+            } else {
+                continue;
             }
 
+            activeGame = true;
             cout << board;
         } else if (activeGame) {
             if (command == "put") {
