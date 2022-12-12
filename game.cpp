@@ -155,9 +155,9 @@ void game::processHint() {
 
     if (currNum == 0) {
         // cell hasn't been guessed yet
-        cout << "The number at (" << x << ", " << y << ") is " << ansNum << "\n";
+        cout << "The number at (" << y << ", " << x << ") is " << ansNum << "\n";
     } else {
-        cout << "Your current guess at (" << x << ", " << y << ") is incorrect. Try " << ansNum << "\n";
+        cout << "Your current guess at (" << y << ", " << x << ") is incorrect. Try " << ansNum << "\n";
     }
 }
 
